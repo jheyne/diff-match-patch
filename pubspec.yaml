@@ -1,12 +1,9 @@
 name: diff_match_patch
-version: 0.1.0
-description: >
-  The Diff Match and Patch libraries offer robust algorithms to perform the
-  operations required for synchronizing plain text.
+version: 0.2.0
 authors:
 - Boris Kaul <localvoid@gmail.com>
 - Neil Fraser <neil.fraser@gmail.com>
-description: A pub package
+description: The Diff Match and Patch libraries offer robust algorithms to perform the operations required for synchronizing plain text.
 homepage: http://github.com/localvoid/diff-match-patch
 dev_dependencies:
   unittest: any
