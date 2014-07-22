@@ -24,7 +24,10 @@ export 'package:diff_match_patch/src/diff.dart' show
   diff,
   cleanupSemantic,
   cleanupEfficiency,
-  levenshtein;
+  levenshtein,
+  DIFF_DELETE,
+  DIFF_INSERT,
+  DIFF_EQUAL;
 
 export 'package:diff_match_patch/src/match.dart' show
   match;
@@ -35,3 +38,5 @@ export 'package:diff_match_patch/src/patch.dart' show
   patchToText,
   patchFromText,
   patchApply;
+
+export 'package:diff_match_patch/src/api.dart' show DiffMatchPatch;
