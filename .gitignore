@@ -1,8 +1,24 @@
-packages
+# https://www.dartlang.org/tools/private-files.html
+
 pubspec.lock
-docs
-**/build/**
-**/*.dart.js
-**/*.dart.js.deps
-**/*.dart.js.map
-**/*.dart.precompiled.js
+
+build/
+packages/
+
+.buildlog
+*.js_
+*.js.deps
+*.js.map
+*.dart.js
+
+# Eclipse
+.project
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Mac
+.DS_Store
