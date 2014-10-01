@@ -23,15 +23,17 @@ part of diff;
 /**
  * Find the differences between two texts.  Simplifies the problem by
  * stripping any common prefix or suffix off the texts before diffing.
- * [text1] is the old string to be diffed.
- * [text2] is the new string to be diffed.
- * [timeout]  is an optional number of seconds to map a diff before giving up
- *     (0 for infinity).
- * [checklines] is an optional speedup flag.  If present and false, then don't
- *     run a line-level diff first to identify the changed areas.
- *     Defaults to true, which does a faster, slightly less optimal diff.
- * [deadline] is an optional time when the diff should be complete by.  Used
- *     internally for recursive calls.  Users should set DiffTimeout instead.
+ *
+ * * [text1] is the old string to be diffed.
+ * * [text2] is the new string to be diffed.
+ * * [timeout]  is an optional number of seconds to map a diff before giving up
+ *   (0 for infinity).
+ * * [checklines] is an optional speedup flag.  If false, then don't
+ *   run a line-level diff first to identify the changed areas.
+ *   Defaults to true, which does a faster, slightly less optimal diff.
+ * * [deadline] is an optional time when the diff should be complete by.  Used
+ *   internally for recursive calls.  Users should set [diffTimeout] instead.
+ *
  * Returns a List of Diff objects.
  */
 List<Diff> diff(String text1, String text2,
@@ -93,14 +95,16 @@ List<Diff> diff(String text1, String text2,
 /**
  * Find the differences between two texts.  Assumes that the texts do not
  * have any common prefix or suffix.
- * [text1] is the old string to be diffed.
- * [text2] is the new string to be diffed.
- * [timeout]  is a number of seconds to map a diff before giving up
- *     (0 for infinity).
- * [checklines] is a speedup flag.  If false, then don't run a
- *     line-level diff first to identify the changed areas.
- *     If true, then run a faster slightly less optimal diff.
- * [deadline] is the time when the diff should be complete by.
+ *
+ * * [text1] is the old string to be diffed.
+ * * [text2] is the new string to be diffed.
+ * * [timeout]  is a number of seconds to map a diff before giving up
+ *   (0 for infinity).
+ * * [checklines] is a speedup flag.  If false, then don't run a
+ *   line-level diff first to identify the changed areas.
+ *   If true, then run a faster slightly less optimal diff.
+ * * [deadline] is the time when the diff should be complete by.
+ *
  * Returns a List of Diff objects.
  */
 List<Diff> _diffCompute(String text1, String text2,
@@ -177,11 +181,13 @@ List<Diff> _diffCompute(String text1, String text2,
  * Do a quick line-level diff on both strings, then rediff the parts for
  * greater accuracy.
  * This speedup can produce non-minimal diffs.
- * [text1] is the old string to be diffed.
- * [text2] is the new string to be diffed.
- * [timeout]  is a number of seconds to map a diff before giving up
- *     (0 for infinity).
- * [deadline] is the time when the diff should be complete by.
+ *
+ * * [text1] is the old string to be diffed.
+ * * [text2] is the new string to be diffed.
+ * * [timeout]  is a number of seconds to map a diff before giving up
+ *   (0 for infinity).
+ * * [deadline] is the time when the diff should be complete by.
+ *
  * Returns a List of Diff objects.
  */
 List<Diff> _diffLineMode(String text1, String text2, double timeout,
@@ -251,12 +257,15 @@ List<Diff> _diffLineMode(String text1, String text2, double timeout,
 /**
  * Find the 'middle snake' of a diff, split the problem in two
  * and return the recursively constructed diff.
+ *
  * See Myers 1986 paper: An O(ND) Difference Algorithm and Its Variations.
- * [text1] is the old string to be diffed.
- * [text2] is the new string to be diffed.
- * [timeout]  is a number of seconds to map a diff before giving up
- *     (0 for infinity).
- * [deadline] is the time at which to bail if not yet complete.
+ *
+ * * [text1] is the old string to be diffed.
+ * * [text2] is the new string to be diffed.
+ * * [timeout]  is a number of seconds to map a diff before giving up
+ *   (0 for infinity).
+ * * [deadline] is the time at which to bail if not yet complete.
+ *
  * Returns a List of Diff objects.
  */
 List<Diff> diffBisect(String text1, String text2, double timeout,
@@ -372,13 +381,15 @@ List<Diff> diffBisect(String text1, String text2, double timeout,
 /**
  * Given the location of the 'middle snake', split the diff in two parts
  * and recurse.
- * [text1] is the old string to be diffed.
- * [text2] is the new string to be diffed.
- * [x] is the index of split point in text1.
- * [y] is the index of split point in text2.
- * [timeout]  is a number of seconds to map a diff before giving up
- *     (0 for infinity).
- * [deadline] is the time at which to bail if not yet complete.
+ *
+ * * [text1] is the old string to be diffed.
+ * * [text2] is the new string to be diffed.
+ * * [x] is the index of split point in text1.
+ * * [y] is the index of split point in text2.
+ * * [timeout] is a number of seconds to map a diff before giving up
+ *   (0 for infinity).
+ * * [deadline] is the time at which to bail if not yet complete.
+ *
  * Returns a List of Diff objects.
  */
 List<Diff> _diffBisectSplit(String text1, String text2,

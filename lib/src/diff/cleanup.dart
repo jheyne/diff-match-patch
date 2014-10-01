@@ -29,6 +29,7 @@ RegExp _blanklineStartRegex = new RegExp(r'^\r?\n\r?\n');
 
 /**
  * Reduce the number of edits by eliminating semantically trivial equalities.
+ *
  * [diffs] is a List of Diff objects.
  */
 void cleanupSemantic(List<Diff> diffs) {
@@ -142,7 +143,9 @@ void cleanupSemantic(List<Diff> diffs) {
 /**
  * Look for single edits surrounded on both sides by equalities
  * which can be shifted sideways to align the edit to a word boundary.
+ *
  * e.g: The c<ins>at c</ins>ame. -> The <ins>cat </ins>came.
+ *
  * [diffs] is a List of Diff objects.
  */
 void cleanupSemanticLossless(List<Diff> diffs) {
@@ -261,6 +264,7 @@ void cleanupSemanticLossless(List<Diff> diffs) {
 
 /**
  * Reduce the number of edits by eliminating operationally trivial equalities.
+ *
  * [diffs] is a List of Diff objects.
  */
 void cleanupEfficiency(List<Diff> diffs, int diffEditCost) {
@@ -344,6 +348,7 @@ void cleanupEfficiency(List<Diff> diffs, int diffEditCost) {
 /**
  * Reorder and merge like edit sections.  Merge equalities.
  * Any edit section can move as long as it doesn't cross an equality.
+ *
  * [diffs] is a List of Diff objects.
  */
 void cleanupMerge(List<Diff> diffs) {

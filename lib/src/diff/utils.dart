@@ -23,9 +23,11 @@ part of diff;
 /**
  * Split a text into a list of strings.  Reduce the texts to a string of
  * hashes where each Unicode character represents one line.
- * [text] is the string to encode.
- * [lineArray] is a List of unique strings.
- * [lineHash] is a Map of strings to indices.
+ *
+ * * [text] is the string to encode.
+ * * [lineArray] is a List of unique strings.
+ * * [lineHash] is a Map of strings to indices.
+ *
  * Returns an encoded string.
  */
 String _linesToCharsMunge(String text, List<String> lineArray,
@@ -59,11 +61,13 @@ String _linesToCharsMunge(String text, List<String> lineArray,
 /**
  * Split two texts into a list of strings.  Reduce the texts to a string of
  * hashes where each Unicode character represents one line.
- * [text1] is the first string.
- * [text2] is the second string.
- * Returns a Map containing the encoded text1, the encoded text2 and
- *     the List of unique strings.  The zeroth element of the List of
- *     unique strings is intentionally blank.
+ *
+ * * [text1] is the first string.
+ * * [text2] is the second string.
+ *
+ * Returns a Map containing the encoded [text1], the encoded [text2] and
+ * the List of unique strings.  The zeroth element of the List of
+ * unique strings is intentionally blank.
  */
 Map<String, dynamic> linesToChars(String text1, String text2) {
   final lineArray = <String>[];
@@ -83,8 +87,9 @@ Map<String, dynamic> linesToChars(String text1, String text2) {
 /**
  * Rehydrate the text in a diff from a string of line hashes to real lines of
  * text.
- * [diffs] is a List of Diff objects.
- * [lineArray] is a List of unique strings.
+ *
+ * * [diffs] is a List of Diff objects.
+ * * [lineArray] is a List of unique strings.
  */
 void charsToLines(List<Diff> diffs, List<String> lineArray) {
   final text = new StringBuffer();
@@ -99,8 +104,10 @@ void charsToLines(List<Diff> diffs, List<String> lineArray) {
 
 /**
  * Determine the common prefix of two strings
- * [text1] is the first string.
- * [text2] is the second string.
+ *
+ * * [text1] is the first string.
+ * * [text2] is the second string.
+ *
  * Returns the number of characters common to the start of each string.
  */
 int commonPrefix(String text1, String text2) {
@@ -118,8 +125,10 @@ int commonPrefix(String text1, String text2) {
 
 /**
  * Determine the common suffix of two strings
- * [text1] is the first string.
- * [text2] is the second string.
+ *
+ * * [text1] is the first string.
+ * * [text2] is the second string.
+ *
  * Returns the number of characters common to the end of each string.
  */
 int commonSuffix(String text1, String text2) {
@@ -139,10 +148,12 @@ int commonSuffix(String text1, String text2) {
 
 /**
  * Determine if the suffix of one string is the prefix of another.
- * [text1] is the first string.
- * [text2] is the second string.
+ *
+ * * [text1] is the first string.
+ * * [text2] is the second string.
+ *
  * Returns the number of characters common to the end of the first
- *     string and the start of the second string.
+ * string and the start of the second string.
  */
  int commonOverlap(String text1, String text2) {
   // Eliminate the null case.
@@ -187,7 +198,9 @@ int commonSuffix(String text1, String text2) {
 /**
  * Compute the Levenshtein distance; the number of inserted, deleted or
  * substituted characters.
+ *
  * [diffs] is a List of Diff objects.
+ *
  * Returns the number of changes.
  */
 int levenshtein(List<Diff> diffs) {
@@ -215,11 +228,14 @@ int levenshtein(List<Diff> diffs) {
 }
 
 /**
- * loc is a location in text1, compute and return the equivalent location in
+ * [loc] is a location in text1, compute and return the equivalent location in
  * text2.
+ *
  * e.g. "The cat" vs "The big cat", 1->1, 5->8
- * [diffs] is a List of Diff objects.
- * [loc] is the location within text1.
+ *
+ * * [diffs] is a List of Diff objects.
+ * * [loc] is the location within text1.
+ *
  * Returns the location within text2.
  */
 int diffXIndex(List<Diff> diffs, int loc) {
@@ -255,7 +271,9 @@ int diffXIndex(List<Diff> diffs, int loc) {
 
 /**
  * Compute and return the source text (all equalities and deletions).
+ *
  * [diffs] is a List of Diff objects.
+ *
  * Returns the source text.
  */
 String diffText1(List<Diff> diffs) {
@@ -270,7 +288,9 @@ String diffText1(List<Diff> diffs) {
 
 /**
  * Compute and return the destination text (all equalities and insertions).
+ *
  * [diffs] is a List of Diff objects.
+ *
  * Returns the destination text.
  */
 String diffText2(List<Diff> diffs) {
