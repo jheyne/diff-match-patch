@@ -43,7 +43,9 @@ class Patch {
 
   /**
    * Emmulate GNU diff's format.
+   *
    * Header: @@ -382,8 +481,9 @@
+   *
    * Indicies are printed as 1-based, not 0-based.
    * Returns the GNU diff string.
    */
@@ -87,6 +89,7 @@ class Patch {
 
 /**
  * Take a list of patches and return a textual representation.
+ *
  * [patches] is a List of Patch objects.
  * Returns a text representation of patches.
  */
@@ -99,10 +102,12 @@ String patchToText(List<Patch> patches) {
 }
 
 /**
- * Parse a textual representation of patches and return a List of Patch
- * objects.
+ * Parse a textual representation of patches and return a List of Patch objects.
+ *
  * [textline] is a text representation of patches.
+ *
  * Returns a List of Patch objects.
+ *
  * Throws ArgumentError if invalid input.
  */
 List<Patch> patchFromText(String textline) {
@@ -183,9 +188,10 @@ List<Patch> patchFromText(String textline) {
 /**
  * Increase the context until it is unique,
  * but don't let the pattern expand beyond Match_MaxBits.
- * [patch] is the phe patch to grow.
- * [text] is the source text.
- * [patchMargin] Chunk size for context length.
+ *
+ * * [patch] is the patch to grow.
+ * * [text] is the source text.
+ * * [patchMargin] Chunk size for context length.
  */
 void patchAddContext(Patch patch, String text, int patchMargin) {
   if (text.isEmpty) {
@@ -226,18 +232,21 @@ void patchAddContext(Patch patch, String text, int patchMargin) {
 }
 
 /**
- * Compute a list of patches to turn text1 into text2.
+ * Compute a List of Patches to turn [text1] into [text2].
+ *
  * Use diffs if provided, otherwise compute it ourselves.
  * There are four ways to call this function, depending on what data is
  * available to the caller:
- * Method 1:
- * [a] = text1, [b] = text2
- * Method 2:
- * [a] = diffs
- * Method 3 (optimal):
- * [a] = text1, [b] = diffs
- * Method 4 (deprecated, use method 3):
- * [a] = text1, [b] = text2, [c] = diffs
+ *
+ * * Method 1:
+ *   [a] = text1, [b] = text2
+ * * Method 2:
+ *   [a] = diffs
+ * * Method 3 (optimal):
+ *   [a] = text1, [b] = diffs
+ * * Method 4 (deprecated, use method 3):
+ *   [a] = text1, [b] = text2, [c] = diffs
+ *
  * Returns a List of Patch objects.
  */
 List<Patch> patchMake(a, {b, c, double diffTimeout: 1.0, DateTime diffDeadline,
@@ -378,12 +387,15 @@ List<Patch> patchDeepCopy(List<Patch> patches) {
 }
 
 /**
- * Merge a set of patches onto the text.  Return a patched text, as well
+ * Merge a set of patches onto the text.
+ *
+ * Return a patched text, as well
  * as an array of true/false values indicating which patches were applied.
- * [patches] is a List of Patch objects
- * [text] is the old text.
- * Returns a two element List, containing the new text and a List of
- *      bool values.
+ *
+ * * [patches] is a List of Patch objects
+ * * [text] is the old text.
+ *
+ * Returns a two element List, containing the new text and a List of bool values.
  */
 List patchApply(List<Patch> patches, String text,
                 {double deleteThreshold: 0.5, double diffTimeout: 1.0,
@@ -506,8 +518,11 @@ List patchApply(List<Patch> patches, String text,
 
 /**
  * Add some padding on text start and end so that edges can match something.
- * Intended to be called only from within patch_apply.
+ *
+ * Intended to be called only from within [patch_apply].
+ *
  * [patches] is a List of Patch objects.
+ *
  * Returns the padding string added to each side.
  */
 String patchAddPadding(List<Patch> patches, {int margin: 4}) {
@@ -568,9 +583,11 @@ String patchAddPadding(List<Patch> patches, {int margin: 4}) {
 }
 
 /**
- * Look through the patches and break up any which are longer than the
+ * Look through the [patches] and break up any which are longer than the
  * maximum limit of the match algorithm.
- * Intended to be called only from within patch_apply.
+ *
+ * Intended to be called only from within [patch_apply].
+ *
  * [patches] is a List of Patch objects.
  */
 void patchSplitMax(List<Patch> patches, {int margin: 4}) {

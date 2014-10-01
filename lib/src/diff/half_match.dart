@@ -23,12 +23,15 @@ part of diff;
 /**
  * Do the two texts share a substring which is at least half the length of
  * the longer text?
+ *
  * This speedup can produce non-minimal diffs.
- * [text1] is the first string.
- * [text2] is the second string.
- * Returns a five element List of Strings, containing the prefix of text1,
- *     the suffix of text1, the prefix of text2, the suffix of text2 and the
- *     common middle.  Or null if there was no match.
+ *
+ * * [text1] is the first string.
+ * * [text2] is the second string.
+ *
+ * Returns a five element List of Strings, containing the prefix of [text1],
+ * the suffix of [text1], the prefix of [text2], the suffix of [text2] and the
+ * common middle.  Or null if there was no match.
  */
 List<String> diffHalfMatch(String text1, String text2, double timeout) {
   if (timeout <= 0) {
@@ -69,14 +72,16 @@ List<String> diffHalfMatch(String text1, String text2, double timeout) {
 }
 
 /**
- * Does a substring of shorttext exist within longtext such that the
- * substring is at least half the length of longtext?
- * [longtext] is the longer string.
- * [shorttext is the shorter string.
- * [i] Start index of quarter length substring within longtext.
- * Returns a five element String array, containing the prefix of longtext,
- *     the suffix of longtext, the prefix of shorttext, the suffix of
- *     shorttext and the common middle.  Or null if there was no match.
+ * Does a substring of [shorttext] exist within [longtext] such that the
+ * substring is at least half the length of [longtext]?
+ *
+ * * [longtext] is the longer string.
+ * * [shorttext is the shorter string.
+ * * [i] Start index of quarter length substring within longtext.
+ *
+ * Returns a five element String array, containing the prefix of [longtext],
+ * the suffix of [longtext], the prefix of [shorttext], the suffix of
+ * [shorttext] and the common middle.  Or null if there was no match.
  */
 List<String> _diffHalfMatchI(String longtext, String shorttext, int i) {
   // Start with a 1/4 length substring at position i as a seed.

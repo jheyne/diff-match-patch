@@ -23,16 +23,18 @@ import 'dart:math';
 import 'package:diff_match_patch/src/common.dart';
 
 /**
- * Locate the best instance of 'pattern' in 'text' near 'loc'.
+ * Locate the best instance of [pattern] in [text] near [loc].
  * Returns -1 if no match found.
- * [text] is the text to search.
- * [pattern] is the pattern to search for.
- * [loc] is the location to search around.
- * [threshold] At what point is no match declared (0.0 = perfection,
- *     1.0 = very loose).
- * [distance] How far to search for a match (0 = exact location, 1000+ = broad
- *     match). A match this many characters away from the expected location will
- *     add 1.0 to the score (0.0 is a perfect match).
+ *
+ * * [text] is the text to search.
+ * * [pattern] is the pattern to search for.
+ * * [loc] is the location to search around.
+ * * [threshold] At what point is no match declared (0.0 = perfection,
+ *   1.0 = very loose).
+ * * [distance] How far to search for a match (0 = exact location, 1000+ = broad
+ *   match). A match this many characters away from the expected location will
+ *   add 1.0 to the score (0.0 is a perfect match).
+ *
  * Returns the best match index or -1.
  */
 int match(String text, String pattern, int loc,
@@ -60,14 +62,16 @@ int match(String text, String pattern, int loc,
 }
 
 /**
- * Compute and return the score for a match with e errors and x location.
- * [e] is the number of errors in match.
- * [x] is the location of match.
- * [loc] is the expected location of match.
- * [pattern] is the pattern being sought.
- * [distance] How far to search for a match (0 = exact location, 1000+ = broad
- *     match). A match this many characters away from the expected location will
- *     add 1.0 to the score (0.0 is a perfect match).
+ * Compute and return the score for a match with [e] errors and [x] location.
+ *
+ * * [e] is the number of errors in match.
+ * * [x] is the location of match.
+ * * [loc] is the expected location of match.
+ * * [pattern] is the pattern being sought.
+ * * [distance] How far to search for a match (0 = exact location, 1000+ = broad
+ *   match). A match this many characters away from the expected location will
+ *   add 1.0 to the score (0.0 is a perfect match).
+ *
  * Returns the overall score for match (0.0 = good, 1.0 = bad).
  */
 double _bitapScore(int e, int x, int loc, String pattern, int distance) {
@@ -81,16 +85,18 @@ double _bitapScore(int e, int x, int loc, String pattern, int distance) {
 }
 
 /**
- * Locate the best instance of 'pattern' in 'text' near 'loc' using the
+ * Locate the best instance of [pattern] in [text] near [loc] using the
  * Bitap algorithm.  Returns -1 if no match found.
- * [text] is the the text to search.
- * [pattern] is the pattern to search for.
- * [loc] is the location to search around.
- * [threshold] At what point is no match declared (0.0 = perfection,
- *     1.0 = very loose).
- * [distance] How far to search for a match (0 = exact location, 1000+ = broad
- *     match). A match this many characters away from the expected location will
- *     add 1.0 to the score (0.0 is a perfect match).
+ *
+ * * [text] is the the text to search.
+ * * [pattern] is the pattern to search for.
+ * * [loc] is the location to search around.
+ * * [threshold] At what point is no match declared (0.0 = perfection,
+ *   1.0 = very loose).
+ * * [distance] How far to search for a match (0 = exact location, 1000+ = broad
+ *   match). A match this many characters away from the expected location will
+ *   add 1.0 to the score (0.0 is a perfect match).
+ *
  * Returns the best match index or -1.
  */
 int matchBitap(String text, String pattern, int loc, double threshold,
@@ -190,6 +196,7 @@ int matchBitap(String text, String pattern, int loc, double threshold,
 
 /**
  * Initialise the alphabet for the Bitap algorithm.
+ *
  * [pattern] is the the text to encode.
  * Returns a Map of character locations.
  */

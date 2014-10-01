@@ -22,10 +22,14 @@ part of diff;
 
 /**
  * The data structure representing a diff is a List of Diff objects:
- * {Diff(DIFF_DELETE, 'Hello'), Diff(DIFF_INSERT, 'Goodbye'),
- *  Diff(DIFF_EQUAL, ' world.')}
+ *
+ *     [Diff(DIFF_DELETE, 'Hello'),
+ *      Diff(DIFF_INSERT, 'Goodbye'),
+ *      Diff(DIFF_EQUAL, ' world.')]
+ *
  * which means: delete 'Hello', add 'Goodbye' and keep ' world.'
  */
+
 const DIFF_DELETE = -1;
 const DIFF_INSERT = 1;
 const DIFF_EQUAL = 0;
@@ -35,7 +39,7 @@ const DIFF_EQUAL = 0;
  */
 class Diff {
   /**
-   * One of: DIFF_INSERT, DIFF_DELETE or DIFF_EQUAL.
+   * One of: [DIFF_INSERT], [DIFF_DELETE] or [DIFF_EQUAL].
    */
   int operation;
   /**
@@ -45,13 +49,15 @@ class Diff {
 
   /**
    * Constructor.  Initializes the diff with the provided values.
-   * [operation] is one of DIFF_INSERT, DIFF_DELETE or DIFF_EQUAL.
-   * [text] is the text being applied.
+   *
+   * * [operation] is one of [DIFF_INSERT], [DIFF_DELETE] or [DIFF_EQUAL].
+   * * [text] is the text being applied.
    */
   Diff(this.operation, this.text);
 
   /**
    * Display a human-readable version of this Diff.
+   *
    * Returns a text version.
    */
   String toString() {
@@ -61,7 +67,9 @@ class Diff {
 
   /**
    * Is this Diff equivalent to another Diff?
+   *
    * [other] is another Diff to compare against.
+   *
    * Returns true or false.
    */
   bool operator ==(Diff other) {

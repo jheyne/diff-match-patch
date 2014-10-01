@@ -21,11 +21,15 @@
 part of diff;
 
 /**
- * Crush the diff into an encoded string which describes the operations
+ * Crush the diff into an encoded String which describes the operations
  * required to transform text1 into text2.
+ *
  * E.g. =3\t-2\t+ing  -> Keep 3 chars, delete 2 chars, insert 'ing'.
+ *
  * Operations are tab-separated.  Inserted text is escaped using %xx notation.
+ *
  * [diffs] is a List of Diff objects.
+ *
  * Returns the delta text.
 */
 String toDelta(List<Diff> diffs) {
@@ -61,11 +65,14 @@ String toDelta(List<Diff> diffs) {
 }
 
 /**
- * Given the original text1, and an encoded string which describes the
- * operations required to transform text1 into text2, compute the full diff.
- * [text1] is the source string for the diff.
- * [delta] is the delta text.
+ * Given the original [text1], and an encoded String which describes the
+ * operations required to transform [text1] into text2, compute the full diff.
+ *
+ * * [text1] is the source string for the diff.
+ * * [delta] is the delta text.
+ *
  * Returns a List of Diff objects or null if invalid.
+ *
  * Throws ArgumentError if invalid input.
  */
 List<Diff> fromDelta(String text1, String delta) {
