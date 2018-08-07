@@ -68,11 +68,12 @@ class Diff {
   /**
    * Is this Diff equivalent to another Diff?
    *
-   * [other] is another Diff to compare against.
+   * [other] is another object to compare against.
    *
-   * Returns true or false.
+   * Returns true or false based on whether [other] is a Diff with the same [operation]
+   * and [text] values as this Diff.
    */
-  bool operator ==(Diff other) {
-    return (operation == other.operation && text == other.text);
+  bool operator ==(other) {
+    return other is Diff && operation == other.operation && text == other.text;
   }
 }
