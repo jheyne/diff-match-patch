@@ -156,7 +156,7 @@ List<Patch> patchFromText(String textline) {
         String line;
         try {
           line = Uri.decodeFull(text[textPointer].substring(1));
-        } on ArgumentError catch (e) {
+        } on ArgumentError {
           // Malformed URI sequence.
           throw new ArgumentError(
               'Illegal escape in patch_fromText: $line');
@@ -249,7 +249,7 @@ void patchAddContext(Patch patch, String text, int patchMargin) {
  *
  * Returns a List of Patch objects.
  */
-List<Patch> patchMake(a, {b, c, double diffTimeout: 1.0, DateTime diffDeadline,
+List<Patch> patchMake(Object a, {Object b, Object c, double diffTimeout: 1.0, DateTime diffDeadline,
   int diffEditCost: 4, double deleteThreshold: 0.5, int margin: 4}) {
 
   String text1;
@@ -264,16 +264,16 @@ List<Patch> patchMake(a, {b, c, double diffTimeout: 1.0, DateTime diffDeadline,
       cleanupSemantic(diffs);
       cleanupEfficiency(diffs, diffEditCost);
     }
-  } else if (a is List && b == null && c == null) {
+  } else if (a is List<Diff> && b == null && c == null) {
     // Method 2: diffs
     // Compute text1 from diffs.
     diffs = a;
     text1 = diffText1(diffs);
-  } else if (a is String && b is List && c == null) {
+  } else if (a is String && b is List<Diff> && c == null) {
     // Method 3: text1, diffs
     text1 = a;
     diffs = b;
-  } else if (a is String && b is String && c is List) {
+  } else if (a is String && b is String && c is List<Diff>) {
     // Method 4: text1, text2, diffs
     // text2 is not used.
     text1 = a;

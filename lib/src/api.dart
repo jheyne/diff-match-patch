@@ -149,7 +149,7 @@ class DiffMatchPatch {
    *
    * Returns a List of Patch objects.
    */
-  List<p.Patch> patch(a, [opt_b, opt_c]) {
+  List<p.Patch> patch(Object a, [Object opt_b, Object opt_c]) {
     return p.patchMake(a, b: opt_b, c: opt_c, diffTimeout: diffTimeout,
         diffEditCost: diffEditCost, deleteThreshold: patchDeleteThreshold,
         margin: patchMargin);

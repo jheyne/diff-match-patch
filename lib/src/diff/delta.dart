@@ -93,7 +93,7 @@ List<Diff> fromDelta(String text1, String delta) {
       param = param.replaceAll('+', '%2B');
       try {
         param = Uri.decodeFull(param);
-      } on ArgumentError catch (e) {
+      } on ArgumentError {
         // Malformed URI sequence.
         throw new ArgumentError(
             'Illegal escape in diff_fromDelta: $param');
@@ -106,7 +106,7 @@ List<Diff> fromDelta(String text1, String delta) {
       int n;
       try {
         n = int.parse(param);
-      } on FormatException catch (e) {
+      } on FormatException {
         throw new ArgumentError(
             'Invalid number in diff_fromDelta: $param');
       }
@@ -117,7 +117,7 @@ List<Diff> fromDelta(String text1, String delta) {
       String text;
       try {
         text = text1.substring(pointer, pointer += n);
-      } on RangeError catch (e) {
+      } on RangeError {
         throw new ArgumentError('Delta length ($pointer)'
             ' larger than source text length (${text1.length}).');
       }

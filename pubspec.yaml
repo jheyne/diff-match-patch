@@ -1,14 +1,14 @@
 name: diff_match_patch
-version: 0.2.2
+version: 0.3.0
 authors:
 - Boris Kaul <localvoid@gmail.com>
 - Neil Fraser <neil.fraser@gmail.com>
 - Jim Heyne <jheyne@gmail.com>
 description: The Diff Match and Patch libraries offer robust algorithms to perform the operations required for synchronizing plain text.
-homepage: http://github.com/localvoid/diff-match-patch
+homepage: http://github.com/jheyne/diff-match-patch
 
 environment:
-  sdk: '<2.0.0'
+  sdk: '>=2.0.0 <3.0.0'
 
 dev_dependencies:
   test: any

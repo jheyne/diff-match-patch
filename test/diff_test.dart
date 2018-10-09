@@ -25,7 +25,7 @@ Diff deq(String t) => new Diff(DIFF_EQUAL, t);
 Diff ddel(String t) => new Diff(DIFF_DELETE, t);
 Diff dins(String t) => new Diff(DIFF_INSERT, t);
 
-List<String> _rebuildTexts(diffs) {
+List<String> _rebuildTexts(List<Diff> diffs) {
   // Construct the two texts which made up the diff originally.
   final text1 = new StringBuffer();
   final text2 = new StringBuffer();
@@ -316,57 +316,57 @@ main() {
     group("Cleanup Semantic", () {
       // Cleanup semantically trivial equalities.
       test("Null case", () {
-        var diffs = [];
+        var diffs = <Diff>[];
         cleanupSemantic(diffs);
         expect(diffs, equals([]));
       });
       test("No elimination #1", () {
-        var diffs = [ddel('ab'), dins('cd'), deq('12'), ddel('e')];
+        var diffs = <Diff>[ddel('ab'), dins('cd'), deq('12'), ddel('e')];
         cleanupSemantic(diffs);
         expect(diffs, equals([ddel('ab'), dins('cd'), deq('12'), ddel('e')]));
       });
       test("No elimination #2", () {
-        var diffs = [ddel('abc'), dins('ABC'), deq('1234'), ddel('wxyz')];
+        var diffs = <Diff>[ddel('abc'), dins('ABC'), deq('1234'), ddel('wxyz')];
         cleanupSemantic(diffs);
         expect(diffs, equals([ddel('abc'), dins('ABC'), deq('1234'), ddel('wxyz')]));
       });
       test("Simple elimination", () {
-        var diffs = [ddel('a'), deq('b'), ddel('c')];
+        var diffs = <Diff>[ddel('a'), deq('b'), ddel('c')];
         cleanupSemantic(diffs);
         expect(diffs, equals([ddel('abc'), dins('b')]));
       });
       test("Backpass elimination", () {
-        var diffs = [ddel('ab'), deq('cd'), ddel('e'), deq('f'), dins('g')];
+        var diffs = <Diff>[ddel('ab'), deq('cd'), ddel('e'), deq('f'), dins('g')];
         cleanupSemantic(diffs);
         expect(diffs, equals([ddel('abcdef'), dins('cdfg')]));
       });
       test("Multiple elimination", () {
-        var diffs = [dins('1'), deq('A'), ddel('B'), dins('2'), deq('_'), dins('1'), deq('A'), ddel('B'), dins('2')];
+        var diffs = <Diff>[dins('1'), deq('A'), ddel('B'), dins('2'), deq('_'), dins('1'), deq('A'), ddel('B'), dins('2')];
         cleanupSemantic(diffs);
         expect(diffs, equals([ddel('AB_AB'), dins('1A2_1A2')]));
       });
       test("Word boundaries", () {
-        var diffs = [deq('The c'), ddel('ow and the c'), deq('at.')];
+        var diffs = <Diff>[deq('The c'), ddel('ow and the c'), deq('at.')];
         cleanupSemantic(diffs);
         expect(diffs, equals([deq('The '), ddel('cow and the '), deq('cat.')]));
       });
       test("No overlap elimination", () {
-        var diffs = [ddel('abcxx'), dins('xxdef')];
+        var diffs = <Diff>[ddel('abcxx'), dins('xxdef')];
         cleanupSemantic(diffs);
         expect(diffs, equals([ddel('abcxx'), dins('xxdef')]));
       });
       test("Overlap elimination", () {
-        var diffs = [ddel('abcxxx'), dins('xxxdef')];
+        var diffs = <Diff>[ddel('abcxxx'), dins('xxxdef')];
         cleanupSemantic(diffs);
         expect(diffs, equals([ddel('abc'), deq('xxx'), dins('def')]));
       });
       test("Reverse overlap elimination", () {
-        var diffs = [ddel('xxxabc'), dins('defxxx')];
+        var diffs = <Diff>[ddel('xxxabc'), dins('defxxx')];
         cleanupSemantic(diffs);
         expect(diffs, equals([dins('def'), deq('xxx'), ddel('abc')]));
       });
       test("Two overlap eliminations", () {
-        var diffs = [ddel('abcd1212'), dins('1212efghi'), deq('----'), ddel('A3'), dins('3BC')];
+        var diffs = <Diff>[ddel('abcd1212'), dins('1212efghi'), deq('----'), ddel('A3'), dins('3BC')];
         cleanupSemantic(diffs);
         expect(diffs, equals([ddel('abcd'), deq('1212'), dins('efghi'), deq('----'), ddel('A'), deq('3'), dins('BC')]));
       });
@@ -375,7 +375,7 @@ main() {
     group("Cleanup Efficiency", () {
       // Cleanup operationally trivial equalities.
       test("Null case", () {
-        var diffs = [];
+        var diffs = <Diff>[];
         cleanupEfficiency(diffs, 4);
         expect(diffs, equals([]));
       });

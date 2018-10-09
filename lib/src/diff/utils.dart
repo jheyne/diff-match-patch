@@ -81,7 +81,7 @@ Map<String, dynamic> linesToChars(String text1, String text2) {
 
   String chars1 = _linesToCharsMunge(text1, lineArray, lineHash);
   String chars2 = _linesToCharsMunge(text2, lineArray, lineHash);
-  return {'chars1': chars1, 'chars2': chars2, 'lineArray': lineArray};
+  return <String, dynamic>{'chars1': chars1, 'chars2': chars2, 'lineArray': lineArray};
 }
 
 /**

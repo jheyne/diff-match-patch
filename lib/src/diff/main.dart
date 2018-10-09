@@ -194,9 +194,9 @@ List<Diff> _diffLineMode(String text1, String text2, double timeout,
                          DateTime deadline) {
   // Scan the text on a line-by-line basis first.
   final a = linesToChars(text1, text2);
-  text1 = a['chars1'];
-  text2 = a['chars2'];
-  final linearray = a['lineArray'];
+  text1 = a['chars1'] as String;
+  text2 = a['chars2'] as String;
+  final List<String> linearray = a['lineArray'] as List<String>;
 
   final diffs = diff(text1, text2,
                      timeout: timeout,

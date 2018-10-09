@@ -38,7 +38,7 @@ import 'package:diff_match_patch/src/common.dart';
  * Returns the best match index or -1.
  */
 int match(String text, String pattern, int loc,
-          {threshold: 0.5, distance: 1000}) {
+          {double threshold: 0.5, int distance: 1000}) {
   // Check for null inputs.
   if (text == null || pattern == null) {
     throw new ArgumentError('Null inputs. (match_main)');

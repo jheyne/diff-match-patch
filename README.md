@@ -1,7 +1,7 @@
 # Diff Match Patch
 
 This is a port of [google-diff-match-patch](https://code.google.com/p/google-diff-match-patch/)
-library to Dart.
+library to Dart. Initially maintained by localvoid, handed off to jheyne for upgrades.
 
 ## Algorithms
 
