@@ -72,7 +72,17 @@ class Diff {
    *
    * Returns true or false.
    */
-  bool operator ==(Diff other) {
-    return (operation == other.operation && text == other.text);
-  }
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Diff &&
+              runtimeType == other.runtimeType &&
+              operation == other.operation &&
+              text == other.text;
+
+  @override
+  int get hashCode =>
+      operation.hashCode ^
+      text.hashCode;
+
 }

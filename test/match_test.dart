@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:diff_match_patch/src/match.dart';
 
 main() {
