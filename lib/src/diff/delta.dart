@@ -39,19 +39,19 @@ String toDelta(List<Diff> diffs) {
     case DIFF_INSERT:
       text
       ..write('+')
-      ..write(Uri.encodeFull(aDiff.text))
+      ..write(Uri.encodeFull(aDiff.text!))
       ..write('\t');
       break;
     case DIFF_DELETE:
       text
       ..write('-')
-      ..write(aDiff.text.length)
+      ..write(aDiff.text!.length)
       ..write('\t');
       break;
     case DIFF_EQUAL:
       text
       ..write('=')
-      ..write(aDiff.text.length)
+      ..write(aDiff.text!.length)
       ..write('\t');
       break;
     }

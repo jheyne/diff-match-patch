@@ -1,5 +1,5 @@
 name: diff_match_patch
-version: 0.3.0
+version: 1.0.0
 authors:
 - Boris Kaul <localvoid@gmail.com>
 - Neil Fraser <neil.fraser@gmail.com>
@@ -8,7 +8,7 @@ description: The Diff Match and Patch libraries offer robust algorithms to perfo
 homepage: http://github.com/jheyne/diff-match-patch
 
 environment:
-  sdk: '>=2.0.0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 dev_dependencies:
   test: any

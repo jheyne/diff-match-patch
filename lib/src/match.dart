@@ -37,7 +37,7 @@ import 'package:diff_match_patch/src/common.dart';
  *
  * Returns the best match index or -1.
  */
-int match(String text, String pattern, int loc,
+int match(String? text, String? pattern, int loc,
           {double threshold: 0.5, int distance: 1000}) {
   // Check for null inputs.
   if (text == null || pattern == null) {
@@ -128,7 +128,7 @@ int matchBitap(String text, String pattern, int loc, double threshold,
 
   int bin_min, bin_mid;
   int bin_max = pattern.length + text.length;
-  List<int> last_rd;
+  late List<int?> last_rd;
   for (int d = 0; d < pattern.length; d++) {
     // Scan for the best match; each iteration allows for one more error.
     // Run a binary search to determine how far from 'loc' we can stray at
@@ -149,10 +149,10 @@ int matchBitap(String text, String pattern, int loc, double threshold,
     int start = max(1, loc - bin_mid + 1);
     int finish = min(loc + bin_mid, text.length) + pattern.length;
 
-    final rd = new List<int>(finish + 2);
+    final rd = new List<int?>.filled(finish + 2, 0);
     rd[finish + 1] = (1 << d) - 1;
     for (int j = finish; j >= start; j--) {
-      int charMatch;
+      int? charMatch;
       if (text.length <= j - 1 || !s.containsKey(text[j - 1])) {
         // Out of range.
         charMatch = 0;
@@ -161,13 +161,13 @@ int matchBitap(String text, String pattern, int loc, double threshold,
       }
       if (d == 0) {
         // First pass: exact match.
-        rd[j] = ((rd[j + 1] << 1) | 1) & charMatch;
+        rd[j] = ((rd[j + 1]! << 1) | 1) & charMatch!;
       } else {
         // Subsequent passes: fuzzy match.
-        rd[j] = ((rd[j + 1] << 1) | 1) & charMatch
-            | (((last_rd[j + 1] | last_rd[j]) << 1) | 1) | last_rd[j + 1];
+        rd[j] = ((rd[j + 1]! << 1) | 1) & charMatch!
+            | (((last_rd[j + 1]! | last_rd[j]!) << 1) | 1) | last_rd[j + 1]!;
       }
-      if ((rd[j] & match_mask) != 0) {
+      if ((rd[j]! & match_mask) != 0) {
         double score = _bitapScore(d, j - 1, loc, pattern, distance);
         // This match will almost certainly be better than any existing
         // match.  But check anyway.
@@ -206,7 +206,7 @@ Map<String, int> matchAlphabet(String pattern) {
     s[pattern[i]] = 0;
   }
   for (int i = 0; i < pattern.length; i++) {
-    s[pattern[i]] = s[pattern[i]] | (1 << (pattern.length - i - 1));
+    s[pattern[i]] = s[pattern[i]]! | (1 << (pattern.length - i - 1));
   }
   return s;
 }

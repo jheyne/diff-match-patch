@@ -37,7 +37,7 @@ void cleanupSemantic(List<Diff> diffs) {
   // Stack of indices where equalities are found.
   final equalities = <int>[];
   // Always equal to diffs[equalities.last()].text
-  String lastequality = null;
+  String? lastequality = null;
   int pointer = 0;  // Index of current position.
   // Number of characters that changed prior to the equality.
   int length_insertions1 = 0;
@@ -55,9 +55,9 @@ void cleanupSemantic(List<Diff> diffs) {
       lastequality = diffs[pointer].text;
     } else {  // An insertion or deletion.
       if (diffs[pointer].operation == DIFF_INSERT) {
-        length_insertions2 += diffs[pointer].text.length;
+        length_insertions2 += diffs[pointer].text!.length;
       } else {
-        length_deletions2 += diffs[pointer].text.length;
+        length_deletions2 += diffs[pointer].text!.length;
       }
       // Eliminate an equality that is smaller or equal to the edits on both
       // sides of it.
@@ -104,8 +104,8 @@ void cleanupSemantic(List<Diff> diffs) {
   while (pointer < diffs.length) {
     if (diffs[pointer - 1].operation == DIFF_DELETE
         && diffs[pointer].operation == DIFF_INSERT) {
-      String deletion = diffs[pointer - 1].text;
-      String insertion = diffs[pointer].text;
+      String deletion = diffs[pointer - 1].text!;
+      String insertion = diffs[pointer].text!;
       int overlap_length1 = commonOverlap(deletion, insertion);
       int overlap_length2 = commonOverlap(insertion, deletion);
       if (overlap_length1 >= overlap_length2) {
@@ -158,8 +158,8 @@ void cleanupSemanticLossless(List<Diff> diffs) {
    * [two] the second string.
    * Returns the score.
    */
-  int _cleanupSemanticScore(String one, String two) {
-    if (one.isEmpty || two.isEmpty) {
+  int _cleanupSemanticScore(String one, String? two) {
+    if (one.isEmpty || two!.isEmpty) {
       // Edges are the best.
       return 6;
     }
@@ -205,9 +205,9 @@ void cleanupSemanticLossless(List<Diff> diffs) {
     if (diffs[pointer - 1].operation == DIFF_EQUAL
         && diffs[pointer + 1].operation == DIFF_EQUAL) {
       // This is a single edit surrounded by equalities.
-      String equality1 = diffs[pointer - 1].text;
-      String edit = diffs[pointer].text;
-      String equality2 = diffs[pointer + 1].text;
+      String equality1 = diffs[pointer - 1].text!;
+      String edit = diffs[pointer].text!;
+      String? equality2 = diffs[pointer + 1].text;
 
       // First, shift the edit as far left as possible.
       int commonOffset = commonSuffix(equality1, edit);
@@ -222,10 +222,10 @@ void cleanupSemanticLossless(List<Diff> diffs) {
       // Second, step character by character right, looking for the best fit.
       String bestEquality1 = equality1;
       String bestEdit = edit;
-      String bestEquality2 = equality2;
+      String? bestEquality2 = equality2;
       int bestScore = _cleanupSemanticScore(equality1, edit)
           + _cleanupSemanticScore(edit, equality2);
-      while (!edit.isEmpty && !equality2.isEmpty
+      while (!edit.isEmpty && !equality2!.isEmpty
           && edit[0] == equality2[0]) {
         equality1 = '$equality1${edit[0]}';
         edit = '${edit.substring(1)}${equality2[0]}';
@@ -250,7 +250,7 @@ void cleanupSemanticLossless(List<Diff> diffs) {
           pointer--;
         }
         diffs[pointer].text = bestEdit;
-        if (!bestEquality2.isEmpty) {
+        if (!bestEquality2!.isEmpty) {
           diffs[pointer + 1].text = bestEquality2;
         } else {
           diffs.removeRange(pointer + 1, pointer + 2);
@@ -272,7 +272,7 @@ void cleanupEfficiency(List<Diff> diffs, int diffEditCost) {
   // Stack of indices where equalities are found.
   final equalities = <int>[];
   // Always equal to diffs[equalities.last()].text
-  String lastequality = null;
+  String? lastequality = null;
   int pointer = 0;  // Index of current position.
   // Is there an insertion operation before the last equality.
   bool pre_ins = false;
@@ -284,7 +284,7 @@ void cleanupEfficiency(List<Diff> diffs, int diffEditCost) {
   bool post_del = false;
   while (pointer < diffs.length) {
     if (diffs[pointer].operation == DIFF_EQUAL) {  // Equality found.
-      if (diffs[pointer].text.length < diffEditCost
+      if (diffs[pointer].text!.length < diffEditCost
           && (post_ins || post_del)) {
         // Candidate found.
         equalities.add(pointer);
@@ -439,7 +439,7 @@ void cleanupMerge(List<Diff> diffs) {
         break;
     }
   }
-  if (diffs.last.text.isEmpty) {
+  if (diffs.last.text!.isEmpty) {
     diffs.removeLast();  // Remove the dummy entry at the end.
   }
 
@@ -453,21 +453,21 @@ void cleanupMerge(List<Diff> diffs) {
     if (diffs[pointer - 1].operation == DIFF_EQUAL
         && diffs[pointer + 1].operation == DIFF_EQUAL) {
       // This is a single edit surrounded by equalities.
-      if (diffs[pointer].text.endsWith(diffs[pointer - 1].text)) {
+      if (diffs[pointer].text!.endsWith(diffs[pointer - 1].text!)) {
         // Shift the edit over the previous equality.
         diffs[pointer].text = '${diffs[pointer - 1].text}'
-            '${diffs[pointer].text.substring(0,
-            diffs[pointer].text.length - diffs[pointer - 1].text.length)}';
+            '${diffs[pointer].text!.substring(0,
+            diffs[pointer].text!.length - diffs[pointer - 1].text!.length)}';
         diffs[pointer + 1].text =
             '${diffs[pointer - 1].text}${diffs[pointer + 1].text}';
         diffs.removeRange(pointer - 1, pointer);
         changes = true;
-      } else if (diffs[pointer].text.startsWith(diffs[pointer + 1].text)) {
+      } else if (diffs[pointer].text!.startsWith(diffs[pointer + 1].text!)) {
         // Shift the edit over the next equality.
         diffs[pointer - 1].text =
             '${diffs[pointer - 1].text}${diffs[pointer + 1].text}';
         diffs[pointer].text =
-            '${diffs[pointer].text.substring(diffs[pointer + 1].text.length)}'
+            '${diffs[pointer].text!.substring(diffs[pointer + 1].text!.length)}'
             '${diffs[pointer + 1].text}';
         diffs.removeRange(pointer + 1, pointer + 2);
         changes = true;

@@ -48,7 +48,7 @@ String _linesToCharsMunge(String text, List<String> lineArray,
     lineStart = lineEnd + 1;
 
     if (lineHash.containsKey(line)) {
-      chars.write(new String.fromCharCodes([lineHash[line]]));
+      chars.write(new String.fromCharCodes([lineHash[line]!]));
     } else {
       lineArray.add(line);
       lineHash[line] = lineArray.length - 1;
@@ -91,11 +91,11 @@ Map<String, dynamic> linesToChars(String text1, String text2) {
  * * [diffs] is a List of Diff objects.
  * * [lineArray] is a List of unique strings.
  */
-void charsToLines(List<Diff> diffs, List<String> lineArray) {
+void charsToLines(List<Diff> diffs, List<String>? lineArray) {
   final text = new StringBuffer();
   for (Diff diff in diffs) {
-    for (int y = 0; y < diff.text.length; y++) {
-      text.write(lineArray[diff.text.codeUnitAt(y)]);
+    for (int y = 0; y < diff.text!.length; y++) {
+      text.write(lineArray![diff.text!.codeUnitAt(y)]);
     }
     diff.text = text.toString();
     text.clear();
@@ -210,20 +210,20 @@ int levenshtein(List<Diff> diffs) {
   for (Diff aDiff in diffs) {
     switch (aDiff.operation) {
     case DIFF_INSERT:
-      insertions += aDiff.text.length;
+      insertions += aDiff.text!.length;
       break;
     case DIFF_DELETE:
-      deletions += aDiff.text.length;
+      deletions += aDiff.text!.length;
       break;
     case DIFF_EQUAL:
       // A deletion and an insertion is one substitution.
-      levenshtein += max(insertions, deletions);
+      levenshtein += max<int>(insertions, deletions);
       insertions = 0;
       deletions = 0;
       break;
     }
   }
-  levenshtein += max(insertions, deletions);
+  levenshtein += max<int>(insertions, deletions);
   return levenshtein;
 }
 
@@ -243,15 +243,15 @@ int diffXIndex(List<Diff> diffs, int loc) {
   int chars2 = 0;
   int last_chars1 = 0;
   int last_chars2 = 0;
-  Diff lastDiff = null;
+  Diff? lastDiff = null;
   for (Diff aDiff in diffs) {
     if (aDiff.operation != DIFF_INSERT) {
       // Equality or deletion.
-      chars1 += aDiff.text.length;
+      chars1 += aDiff.text!.length;
     }
     if (aDiff.operation != DIFF_DELETE) {
       // Equality or insertion.
-      chars2 += aDiff.text.length;
+      chars2 += aDiff.text!.length;
     }
     if (chars1 > loc) {
       // Overshot the location.

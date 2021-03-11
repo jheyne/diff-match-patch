@@ -45,7 +45,7 @@ class Diff {
   /**
    * The text associated with this diff operation.
    */
-  String text;
+  String? text;
 
   /**
    * Constructor.  Initializes the diff with the provided values.
@@ -61,7 +61,7 @@ class Diff {
    * Returns a text version.
    */
   String toString() {
-    String prettyText = this.text.replaceAll('\n', '\u00b6');
+    String prettyText = this.text!.replaceAll('\n', '\u00b6');
     return 'Diff(${this.operation},"$prettyText")';
   }
 
