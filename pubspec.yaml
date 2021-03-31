@@ -10,5 +10,8 @@ homepage: http://github.com/jheyne/diff-match-patch
 environment:
   sdk: '>=2.0.0 <3.0.0'
 
+dependencies:
+  pedantic: any
+
 dev_dependencies:
   test: any
