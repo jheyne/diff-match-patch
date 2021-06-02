@@ -28,18 +28,11 @@ import 'dart:math';
  * Class representing one patch operation.
  */
 class Patch {
-  List<Diff> diffs;
-  int start1;
-  int start2;
+  List<Diff> diffs = <Diff>[];
+  int start1 = 0;
+  int start2 = 0;
   int length1 = 0;
   int length2 = 0;
-
-  /**
-   * Constructor.  Initializes with an empty list of diffs.
-   */
-  Patch() {
-    this.diffs = <Diff>[];
-  }
 
   /**
    * Emmulate GNU diff's format.
@@ -120,40 +113,40 @@ List<Patch> patchFromText(String textline) {
   final patchHeader
       = new RegExp('^@@ -(\\d+),?(\\d*) \\+(\\d+),?(\\d*) @@\$');
   while (textPointer < text.length) {
-    Match m = patchHeader.firstMatch(text[textPointer]);
+    Match? m = patchHeader.firstMatch(text[textPointer]);
     if (m == null) {
       throw new ArgumentError(
           'Invalid patch string: ${text[textPointer]}');
     }
     final patch = new Patch();
     patches.add(patch);
-    patch.start1 = int.parse(m.group(1));
-    if (m.group(2).isEmpty) {
+    patch.start1 = int.parse(m.group(1)!);
+    if (m.group(2)!.isEmpty) {
       patch.start1--;
       patch.length1 = 1;
     } else if (m.group(2) == '0') {
       patch.length1 = 0;
     } else {
       patch.start1--;
-      patch.length1 = int.parse(m.group(2));
+      patch.length1 = int.parse(m.group(2)!);
     }
 
-    patch.start2 = int.parse(m.group(3));
-    if (m.group(4).isEmpty) {
+    patch.start2 = int.parse(m.group(3)!);
+    if (m.group(4)!.isEmpty) {
       patch.start2--;
       patch.length2 = 1;
     } else if (m.group(4) == '0') {
       patch.length2 = 0;
     } else {
       patch.start2--;
-      patch.length2 = int.parse(m.group(4));
+      patch.length2 = int.parse(m.group(4)!);
     }
     textPointer++;
 
     while (textPointer < text.length) {
       if (!text[textPointer].isEmpty) {
         final sign = text[textPointer][0];
-        String line;
+        String line = "";
         try {
           line = Uri.decodeFull(text[textPointer].substring(1));
         } on ArgumentError {
@@ -249,7 +242,7 @@ void patchAddContext(Patch patch, String text, int patchMargin) {
  *
  * Returns a List of Patch objects.
  */
-List<Patch> patchMake(Object a, {Object b, Object c, double diffTimeout: 1.0, DateTime diffDeadline,
+List<Patch> patchMake(Object? a, {Object? b, Object? c, double diffTimeout: 1.0, DateTime? diffDeadline,
   int diffEditCost: 4, double deleteThreshold: 0.5, int margin: 4}) {
 
   String text1;
@@ -399,7 +392,7 @@ List<Patch> patchDeepCopy(List<Patch> patches) {
  */
 List patchApply(List<Patch> patches, String text,
                 {double deleteThreshold: 0.5, double diffTimeout: 1.0,
-                 DateTime diffDeadline, double matchThreshold: 0.5,
+                 DateTime? diffDeadline, double matchThreshold: 0.5,
                  int matchDistance: 1000, int margin: 4}) {
   if (patches.isEmpty) {
     return [text, []];
@@ -419,7 +412,7 @@ List patchApply(List<Patch> patches, String text,
   // 20, but the first patch was found at 12, delta is 2 and the second patch
   // has an effective expected position of 22.
   int delta = 0;
-  final results = new List<bool>(patches.length);
+  final results = new List<bool>.filled(patches.length, false);
   for (Patch aPatch in patches) {
     int expected_loc = aPatch.start2 + delta;
     String text1 = diffText1(aPatch.diffs);

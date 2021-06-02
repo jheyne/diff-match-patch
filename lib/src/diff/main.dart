@@ -38,7 +38,7 @@ part of diff;
  */
 List<Diff> diff(String text1, String text2,
                 {double timeout: 1.0, bool checklines: true,
-                 DateTime deadline}) {
+                 DateTime? deadline}) {
   // Set a deadline by which time the diff must be complete.
   if (deadline == null) {
     deadline = new DateTime.now();
@@ -49,10 +49,6 @@ List<Diff> diff(String text1, String text2,
       deadline = deadline.add(new Duration(
           milliseconds: (timeout * 1000).toInt()));
     }
-  }
-  // Check for null inputs.
-  if (text1 == null || text2 == null) {
-    throw new ArgumentError('Null inputs. (diff_main)');
   }
 
   // Check for equality (speedup).
@@ -109,7 +105,7 @@ List<Diff> diff(String text1, String text2,
  */
 List<Diff> _diffCompute(String text1, String text2,
                         double timeout, bool checklines,
-                        DateTime deadline) {
+                        DateTime? deadline) {
   List<Diff> diffs = <Diff>[];
 
   if (text1.length == 0) {
@@ -191,12 +187,12 @@ List<Diff> _diffCompute(String text1, String text2,
  * Returns a List of Diff objects.
  */
 List<Diff> _diffLineMode(String text1, String text2, double timeout,
-                         DateTime deadline) {
+                         DateTime? deadline) {
   // Scan the text on a line-by-line basis first.
   final a = linesToChars(text1, text2);
   text1 = a['chars1'] as String;
   text2 = a['chars2'] as String;
-  final List<String> linearray = a['lineArray'] as List<String>;
+  final List<String> linearray = a['lineArray'] as List<String>? ?? [];
 
   final diffs = diff(text1, text2,
                      timeout: timeout,
@@ -269,15 +265,15 @@ List<Diff> _diffLineMode(String text1, String text2, double timeout,
  * Returns a List of Diff objects.
  */
 List<Diff> diffBisect(String text1, String text2, double timeout,
-                      DateTime deadline) {
+                      DateTime? deadline) {
   // Cache the text lengths to prevent multiple calls.
   final text1_length = text1.length;
   final text2_length = text2.length;
   final max_d = (text1_length + text2_length + 1) ~/ 2;
   final v_offset = max_d;
   final v_length = 2 * max_d;
-  final v1 = new List<int>(v_length);
-  final v2 = new List<int>(v_length);
+  final v1 = new List<int>.filled(v_length, 0);
+  final v2 = new List<int>.filled(v_length, 0);
   for (int x = 0; x < v_length; x++) {
     v1[x] = -1;
     v2[x] = -1;
@@ -296,14 +292,14 @@ List<Diff> diffBisect(String text1, String text2, double timeout,
   int k2end = 0;
   for (int d = 0; d < max_d; d++) {
     // Bail out if deadline is reached.
-    if ((new DateTime.now()).compareTo(deadline) == 1) {
+    if (deadline != null && (new DateTime.now()).compareTo(deadline) == 1) {
       break;
     }
 
     // Walk the front path one step.
     for (int k1 = -d + k1start; k1 <= d - k1end; k1 += 2) {
       int k1_offset = v_offset + k1;
-      int x1;
+      int x1 = 0;
       if (k1 == -d || k1 != d && v1[k1_offset - 1] < v1[k1_offset + 1]) {
         x1 = v1[k1_offset + 1];
       } else {
@@ -338,7 +334,7 @@ List<Diff> diffBisect(String text1, String text2, double timeout,
     // Walk the reverse path one step.
     for (int k2 = -d + k2start; k2 <= d - k2end; k2 += 2) {
       int k2_offset = v_offset + k2;
-      int x2;
+      int x2 = 0;
       if (k2 == -d || k2 != d && v2[k2_offset - 1] < v2[k2_offset + 1]) {
         x2 = v2[k2_offset + 1];
       } else {
@@ -393,7 +389,7 @@ List<Diff> diffBisect(String text1, String text2, double timeout,
  * Returns a List of Diff objects.
  */
 List<Diff> _diffBisectSplit(String text1, String text2,
-                            int x, int y, double timeout, DateTime deadline) {
+                            int x, int y, double timeout, DateTime? deadline) {
   final text1a = text1.substring(0, x);
   final text2a = text2.substring(0, y);
   final text1b = text1.substring(x);

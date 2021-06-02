@@ -48,7 +48,7 @@ String _linesToCharsMunge(String text, List<String> lineArray,
     lineStart = lineEnd + 1;
 
     if (lineHash.containsKey(line)) {
-      chars.write(new String.fromCharCodes([lineHash[line]]));
+      chars.write(new String.fromCharCodes([lineHash[line]!]));
     } else {
       lineArray.add(line);
       lineHash[line] = lineArray.length - 1;
@@ -217,13 +217,13 @@ int levenshtein(List<Diff> diffs) {
       break;
     case DIFF_EQUAL:
       // A deletion and an insertion is one substitution.
-      levenshtein += max(insertions, deletions);
+      levenshtein += max<int>(insertions, deletions);
       insertions = 0;
       deletions = 0;
       break;
     }
   }
-  levenshtein += max(insertions, deletions);
+  levenshtein += max<int>(insertions, deletions);
   return levenshtein;
 }
 
@@ -243,7 +243,7 @@ int diffXIndex(List<Diff> diffs, int loc) {
   int chars2 = 0;
   int last_chars1 = 0;
   int last_chars2 = 0;
-  Diff lastDiff = null;
+  Diff? lastDiff = null;
   for (Diff aDiff in diffs) {
     if (aDiff.operation != DIFF_INSERT) {
       // Equality or deletion.

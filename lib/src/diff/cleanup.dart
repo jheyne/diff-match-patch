@@ -37,7 +37,7 @@ void cleanupSemantic(List<Diff> diffs) {
   // Stack of indices where equalities are found.
   final equalities = <int>[];
   // Always equal to diffs[equalities.last()].text
-  String lastequality = null;
+  String? lastequality = null;
   int pointer = 0;  // Index of current position.
   // Number of characters that changed prior to the equality.
   int length_insertions1 = 0;
@@ -272,7 +272,7 @@ void cleanupEfficiency(List<Diff> diffs, int diffEditCost) {
   // Stack of indices where equalities are found.
   final equalities = <int>[];
   // Always equal to diffs[equalities.last()].text
-  String lastequality = null;
+  String? lastequality = null;
   int pointer = 0;  // Index of current position.
   // Is there an insertion operation before the last equality.
   bool pre_ins = false;

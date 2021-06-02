@@ -118,9 +118,6 @@ main() {
       test("Complex match", () {
         expect(match('I am the very model of a modern major general.', ' that berry ', 5, threshold: 0.7), equals(4));
       });
-      test("Null inputs", () {
-        expect(() => match(null, null, 0), throwsArgumentError);
-      });
     });
   });
 }
