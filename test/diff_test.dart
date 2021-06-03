@@ -590,9 +590,6 @@ main() {
         expect(0.1, lessThanOrEqualTo(elapsedSeconds));
       });
 
-      test("Null", () {
-        expect(() => diff(null, null), throwsArgumentError);
-      });
     });
 
   });

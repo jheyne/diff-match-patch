@@ -33,7 +33,7 @@ part of diff;
  * the suffix of [text1], the prefix of [text2], the suffix of [text2] and the
  * common middle.  Or null if there was no match.
  */
-List<String> diffHalfMatch(String text1, String text2, double timeout) {
+List<String>? diffHalfMatch(String text1, String text2, double timeout) {
   if (timeout <= 0) {
     // Don't risk returning a non-optimal diff if we have unlimited time.
     return null;
@@ -50,7 +50,7 @@ List<String> diffHalfMatch(String text1, String text2, double timeout) {
   // Check again based on the third quarter.
   final hm2 = _diffHalfMatchI(longtext, shorttext,
       ((longtext.length + 1) / 2).ceil().toInt());
-  List<String> hm;
+  List<String>? hm;
   if (hm1 == null && hm2 == null) {
     return null;
   } else if (hm2 == null) {
@@ -67,7 +67,7 @@ List<String> diffHalfMatch(String text1, String text2, double timeout) {
     return hm;
     //return [hm[0], hm[1], hm[2], hm[3], hm[4]];
   } else {
-    return [hm[2], hm[3], hm[0], hm[1], hm[4]];
+    return [hm![2], hm[3], hm[0], hm[1], hm[4]];
   }
 }
 
@@ -83,7 +83,7 @@ List<String> diffHalfMatch(String text1, String text2, double timeout) {
  * the suffix of [longtext], the prefix of [shorttext], the suffix of
  * [shorttext] and the common middle.  Or null if there was no match.
  */
-List<String> _diffHalfMatchI(String longtext, String shorttext, int i) {
+List<String>? _diffHalfMatchI(String longtext, String shorttext, int i) {
   // Start with a 1/4 length substring at position i as a seed.
   final seed = longtext.substring(i,
       i + (longtext.length / 4).floor().toInt());

@@ -39,10 +39,6 @@ import 'package:diff_match_patch/src/common.dart';
  */
 int match(String text, String pattern, int loc,
           {double threshold: 0.5, int distance: 1000}) {
-  // Check for null inputs.
-  if (text == null || pattern == null) {
-    throw new ArgumentError('Null inputs. (match_main)');
-  }
 
   loc = max(0, min(loc, text.length));
   if (text == pattern) {
@@ -128,7 +124,7 @@ int matchBitap(String text, String pattern, int loc, double threshold,
 
   int bin_min, bin_mid;
   int bin_max = pattern.length + text.length;
-  List<int> last_rd;
+  List<int> last_rd = [];
   for (int d = 0; d < pattern.length; d++) {
     // Scan for the best match; each iteration allows for one more error.
     // Run a binary search to determine how far from 'loc' we can stray at
@@ -149,15 +145,15 @@ int matchBitap(String text, String pattern, int loc, double threshold,
     int start = max(1, loc - bin_mid + 1);
     int finish = min(loc + bin_mid, text.length) + pattern.length;
 
-    final rd = new List<int>(finish + 2);
+    final rd = new List<int>.filled(finish + 2, 0);
     rd[finish + 1] = (1 << d) - 1;
     for (int j = finish; j >= start; j--) {
-      int charMatch;
+      int charMatch = 0;
       if (text.length <= j - 1 || !s.containsKey(text[j - 1])) {
         // Out of range.
         charMatch = 0;
       } else {
-        charMatch = s[text[j - 1]];
+        charMatch = s[text[j - 1]] ?? 0;
       }
       if (d == 0) {
         // First pass: exact match.
@@ -206,7 +202,7 @@ Map<String, int> matchAlphabet(String pattern) {
     s[pattern[i]] = 0;
   }
   for (int i = 0; i < pattern.length; i++) {
-    s[pattern[i]] = s[pattern[i]] | (1 << (pattern.length - i - 1));
+    s[pattern[i]] = s[pattern[i]]! | (1 << (pattern.length - i - 1));
   }
   return s;
 }
