@@ -1,3 +1,5 @@
+include: package:pedantic/analysis_options.yaml
+
 analyzer:
   exclude: [.*/**, build/**] # https://github.com/dart-lang/sdk/issues/33112
   errors:

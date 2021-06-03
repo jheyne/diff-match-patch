@@ -8,3 +8,4 @@ environment:
 
 dev_dependencies:
   test: any
+  pedantic: ^1.11.0
