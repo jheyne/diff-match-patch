@@ -1,5 +1,5 @@
 name: diff_match_patch
-version: 0.4.0
+version: 0.4.1
 description: The Diff Match and Patch libraries offer robust algorithms to perform the operations required for synchronizing plain text.
 homepage: http://github.com/jheyne/diff-match-patch
 
