@@ -1,3 +1,6 @@
+# v0.4.1 (2021-06-03)
+- Code cleanup via Pedantic
+
 # v0.4.0 (2021-06-03)
 - Support for null-safety
 
