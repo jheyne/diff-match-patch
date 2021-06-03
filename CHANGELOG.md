@@ -1,3 +1,6 @@
+# v0.4.0 (2021-06-03)
+- Support for null-safety
+
 # v0.3.0 (2018-10-10)
 - Support for Dart 2.0
 
