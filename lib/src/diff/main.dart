@@ -135,20 +135,20 @@ List<Diff> _diffCompute(String text1, String text2, double timeout,
   final hm = diffHalfMatch(text1, text2, timeout);
   if (hm != null) {
     // A half-match was found, sort out the return data.
-    final text1_a = hm[0];
-    final text1_b = hm[1];
-    final text2_a = hm[2];
-    final text2_b = hm[3];
-    final mid_common = hm[4];
+    final text1A = hm[0];
+    final text1B = hm[1];
+    final text2A = hm[2];
+    final text2B = hm[3];
+    final midCommon = hm[4];
     // Send both pairs off for separate processing.
-    final diffs_a = diff(text1_a, text2_a,
+    final diffsA = diff(text1A, text2A,
         timeout: timeout, checklines: checklines, deadline: deadline);
-    final diffs_b = diff(text1_b, text2_b,
+    final diffsB = diff(text1B, text2B,
         timeout: timeout, checklines: checklines, deadline: deadline);
     // Merge the results.
-    diffs = diffs_a;
-    diffs.add(Diff(DIFF_EQUAL, mid_common));
-    diffs.addAll(diffs_b);
+    diffs = diffsA;
+    diffs.add(Diff(DIFF_EQUAL, midCommon));
+    diffs.addAll(diffsB);
     return diffs;
   }
 
@@ -190,37 +190,37 @@ List<Diff> _diffLineMode(
   // Add a dummy entry at the end.
   diffs.add(Diff(DIFF_EQUAL, ''));
   var pointer = 0;
-  var count_delete = 0;
-  var count_insert = 0;
-  final text_delete = StringBuffer();
-  final text_insert = StringBuffer();
+  var countDelete = 0;
+  var countInsert = 0;
+  final textDelete = StringBuffer();
+  final textInsert = StringBuffer();
   while (pointer < diffs.length) {
     switch (diffs[pointer].operation) {
       case DIFF_INSERT:
-        count_insert++;
-        text_insert.write(diffs[pointer].text);
+        countInsert++;
+        textInsert.write(diffs[pointer].text);
         break;
       case DIFF_DELETE:
-        count_delete++;
-        text_delete.write(diffs[pointer].text);
+        countDelete++;
+        textDelete.write(diffs[pointer].text);
         break;
       case DIFF_EQUAL:
         // Upon reaching an equality, check for prior redundancies.
-        if (count_delete >= 1 && count_insert >= 1) {
+        if (countDelete >= 1 && countInsert >= 1) {
           // Delete the offending records and add the merged ones.
-          diffs.removeRange(pointer - count_delete - count_insert, pointer);
-          pointer = pointer - count_delete - count_insert;
-          final a = diff(text_delete.toString(), text_insert.toString(),
+          diffs.removeRange(pointer - countDelete - countInsert, pointer);
+          pointer = pointer - countDelete - countInsert;
+          final a = diff(textDelete.toString(), textInsert.toString(),
               timeout: timeout, checklines: false, deadline: deadline);
           for (var j = a.length - 1; j >= 0; j--) {
             diffs.insert(pointer, a[j]);
           }
           pointer = pointer + a.length;
         }
-        count_insert = 0;
-        count_delete = 0;
-        text_delete.clear();
-        text_insert.clear();
+        countInsert = 0;
+        countDelete = 0;
+        textDelete.clear();
+        textInsert.clear();
         break;
     }
     pointer++;
@@ -245,20 +245,20 @@ List<Diff> _diffLineMode(
 List<Diff> diffBisect(
     String text1, String text2, double timeout, DateTime? deadline) {
   // Cache the text lengths to prevent multiple calls.
-  final text1_length = text1.length;
-  final text2_length = text2.length;
-  final max_d = (text1_length + text2_length + 1) ~/ 2;
-  final v_offset = max_d;
-  final v_length = 2 * max_d;
-  final v1 = List<int>.filled(v_length, 0);
-  final v2 = List<int>.filled(v_length, 0);
-  for (var x = 0; x < v_length; x++) {
+  final text1Length = text1.length;
+  final text2Length = text2.length;
+  final maxD = (text1Length + text2Length + 1) ~/ 2;
+  final vOffset = maxD;
+  final vLength = 2 * maxD;
+  final v1 = List<int>.filled(vLength, 0);
+  final v2 = List<int>.filled(vLength, 0);
+  for (var x = 0; x < vLength; x++) {
     v1[x] = -1;
     v2[x] = -1;
   }
-  v1[v_offset + 1] = 0;
-  v2[v_offset + 1] = 0;
-  final delta = text1_length - text2_length;
+  v1[vOffset + 1] = 0;
+  v2[vOffset + 1] = 0;
+  final delta = text1Length - text2Length;
   // If the total number of characters is odd, then the front path will
   // collide with the reverse path.
   final front = (delta % 2 != 0);
@@ -268,7 +268,7 @@ List<Diff> diffBisect(
   var k1end = 0;
   var k2start = 0;
   var k2end = 0;
-  for (var d = 0; d < max_d; d++) {
+  for (var d = 0; d < maxD; d++) {
     // Bail out if deadline is reached.
     if (deadline != null && (DateTime.now()).compareTo(deadline) == 1) {
       break;
@@ -276,30 +276,30 @@ List<Diff> diffBisect(
 
     // Walk the front path one step.
     for (var k1 = -d + k1start; k1 <= d - k1end; k1 += 2) {
-      var k1_offset = v_offset + k1;
+      var k1Offset = vOffset + k1;
       var x1 = 0;
-      if (k1 == -d || k1 != d && v1[k1_offset - 1] < v1[k1_offset + 1]) {
-        x1 = v1[k1_offset + 1];
+      if (k1 == -d || k1 != d && v1[k1Offset - 1] < v1[k1Offset + 1]) {
+        x1 = v1[k1Offset + 1];
       } else {
-        x1 = v1[k1_offset - 1] + 1;
+        x1 = v1[k1Offset - 1] + 1;
       }
       var y1 = x1 - k1;
-      while (x1 < text1_length && y1 < text2_length && text1[x1] == text2[y1]) {
+      while (x1 < text1Length && y1 < text2Length && text1[x1] == text2[y1]) {
         x1++;
         y1++;
       }
-      v1[k1_offset] = x1;
-      if (x1 > text1_length) {
+      v1[k1Offset] = x1;
+      if (x1 > text1Length) {
         // Ran off the right of the graph.
         k1end += 2;
-      } else if (y1 > text2_length) {
+      } else if (y1 > text2Length) {
         // Ran off the bottom of the graph.
         k1start += 2;
       } else if (front) {
-        var k2_offset = v_offset + delta - k1;
-        if (k2_offset >= 0 && k2_offset < v_length && v2[k2_offset] != -1) {
+        var k2Offset = vOffset + delta - k1;
+        if (k2Offset >= 0 && k2Offset < vLength && v2[k2Offset] != -1) {
           // Mirror x2 onto top-left coordinate system.
-          var x2 = text1_length - v2[k2_offset];
+          var x2 = text1Length - v2[k2Offset];
           if (x1 >= x2) {
             // Overlap detected.
             return _diffBisectSplit(text1, text2, x1, y1, timeout, deadline);
@@ -310,34 +310,34 @@ List<Diff> diffBisect(
 
     // Walk the reverse path one step.
     for (var k2 = -d + k2start; k2 <= d - k2end; k2 += 2) {
-      var k2_offset = v_offset + k2;
+      var k2Offset = vOffset + k2;
       var x2 = 0;
-      if (k2 == -d || k2 != d && v2[k2_offset - 1] < v2[k2_offset + 1]) {
-        x2 = v2[k2_offset + 1];
+      if (k2 == -d || k2 != d && v2[k2Offset - 1] < v2[k2Offset + 1]) {
+        x2 = v2[k2Offset + 1];
       } else {
-        x2 = v2[k2_offset - 1] + 1;
+        x2 = v2[k2Offset - 1] + 1;
       }
       var y2 = x2 - k2;
-      while (x2 < text1_length &&
-          y2 < text2_length &&
-          text1[text1_length - x2 - 1] == text2[text2_length - y2 - 1]) {
+      while (x2 < text1Length &&
+          y2 < text2Length &&
+          text1[text1Length - x2 - 1] == text2[text2Length - y2 - 1]) {
         x2++;
         y2++;
       }
-      v2[k2_offset] = x2;
-      if (x2 > text1_length) {
+      v2[k2Offset] = x2;
+      if (x2 > text1Length) {
         // Ran off the left of the graph.
         k2end += 2;
-      } else if (y2 > text2_length) {
+      } else if (y2 > text2Length) {
         // Ran off the top of the graph.
         k2start += 2;
       } else if (!front) {
-        var k1_offset = v_offset + delta - k2;
-        if (k1_offset >= 0 && k1_offset < v_length && v1[k1_offset] != -1) {
-          var x1 = v1[k1_offset];
-          var y1 = v_offset + x1 - k1_offset;
+        var k1Offset = vOffset + delta - k2;
+        if (k1Offset >= 0 && k1Offset < vLength && v1[k1Offset] != -1) {
+          var x1 = v1[k1Offset];
+          var y1 = vOffset + x1 - k1Offset;
           // Mirror x2 onto top-left coordinate system.
-          x2 = text1_length - x2;
+          x2 = text1Length - x2;
           if (x1 >= x2) {
             // Overlap detected.
             return _diffBisectSplit(text1, text2, x1, y1, timeout, deadline);

@@ -96,46 +96,46 @@ int matchBitap(
   Map<String, int> s = matchAlphabet(pattern);
 
   // Highest score beyond which we give up.
-  var score_threshold = threshold;
+  var scoreThreshold = threshold;
   // Is there a nearby exact match? (speedup)
-  var best_loc = text.indexOf(pattern, loc);
-  if (best_loc != -1) {
-    score_threshold =
-        min(_bitapScore(0, best_loc, loc, pattern, distance), score_threshold);
+  var bestLoc = text.indexOf(pattern, loc);
+  if (bestLoc != -1) {
+    scoreThreshold =
+        min(_bitapScore(0, bestLoc, loc, pattern, distance), scoreThreshold);
     // What about in the other direction? (speedup)
-    best_loc = text.lastIndexOf(pattern, loc + pattern.length);
-    if (best_loc != -1) {
-      score_threshold = min(
-          _bitapScore(0, best_loc, loc, pattern, distance), score_threshold);
+    bestLoc = text.lastIndexOf(pattern, loc + pattern.length);
+    if (bestLoc != -1) {
+      scoreThreshold = min(
+          _bitapScore(0, bestLoc, loc, pattern, distance), scoreThreshold);
     }
   }
 
   // Initialise the bit arrays.
-  final match_mask = 1 << (pattern.length - 1);
-  best_loc = -1;
+  final matchMask = 1 << (pattern.length - 1);
+  bestLoc = -1;
 
-  int bin_min, bin_mid;
-  var bin_max = pattern.length + text.length;
-  var last_rd = <int>[];
+  int binMin, binMid;
+  var binMax = pattern.length + text.length;
+  var lastRd = <int>[];
   for (var d = 0; d < pattern.length; d++) {
     // Scan for the best match; each iteration allows for one more error.
     // Run a binary search to determine how far from 'loc' we can stray at
     // this error level.
-    bin_min = 0;
-    bin_mid = bin_max;
-    while (bin_min < bin_mid) {
-      if (_bitapScore(d, loc + bin_mid, loc, pattern, distance) <=
-          score_threshold) {
-        bin_min = bin_mid;
+    binMin = 0;
+    binMid = binMax;
+    while (binMin < binMid) {
+      if (_bitapScore(d, loc + binMid, loc, pattern, distance) <=
+          scoreThreshold) {
+        binMin = binMid;
       } else {
-        bin_max = bin_mid;
+        binMax = binMid;
       }
-      bin_mid = ((bin_max - bin_min) / 2 + bin_min).toInt();
+      binMid = ((binMax - binMin) / 2 + binMin).toInt();
     }
     // Use the result from this iteration as the maximum for the next.
-    bin_max = bin_mid;
-    var start = max(1, loc - bin_mid + 1);
-    var finish = min(loc + bin_mid, text.length) + pattern.length;
+    binMax = binMid;
+    var start = max(1, loc - binMid + 1);
+    var finish = min(loc + binMid, text.length) + pattern.length;
 
     final rd = List<int>.filled(finish + 2, 0);
     rd[finish + 1] = (1 << d) - 1;
@@ -153,20 +153,20 @@ int matchBitap(
       } else {
         // Subsequent passes: fuzzy match.
         rd[j] = ((rd[j + 1] << 1) | 1) & charMatch |
-            (((last_rd[j + 1] | last_rd[j]) << 1) | 1) |
-            last_rd[j + 1];
+            (((lastRd[j + 1] | lastRd[j]) << 1) | 1) |
+            lastRd[j + 1];
       }
-      if ((rd[j] & match_mask) != 0) {
+      if ((rd[j] & matchMask) != 0) {
         var score = _bitapScore(d, j - 1, loc, pattern, distance);
         // This match will almost certainly be better than any existing
         // match.  But check anyway.
-        if (score <= score_threshold) {
+        if (score <= scoreThreshold) {
           // Told you so.
-          score_threshold = score;
-          best_loc = j - 1;
-          if (best_loc > loc) {
+          scoreThreshold = score;
+          bestLoc = j - 1;
+          if (bestLoc > loc) {
             // When passing loc, don't exceed our current distance from loc.
-            start = max(1, 2 * loc - best_loc);
+            start = max(1, 2 * loc - bestLoc);
           } else {
             // Already passed loc, downhill from here on in.
             break;
@@ -174,13 +174,13 @@ int matchBitap(
         }
       }
     }
-    if (_bitapScore(d + 1, loc, loc, pattern, distance) > score_threshold) {
+    if (_bitapScore(d + 1, loc, loc, pattern, distance) > scoreThreshold) {
       // No hope for a (better) match at greater error levels.
       break;
     }
-    last_rd = rd;
+    lastRd = rd;
   }
-  return best_loc;
+  return bestLoc;
 }
 
 /// Initialise the alphabet for the Bitap algorithm.

@@ -16,4 +16,5 @@
 
 library _common;
 
+// ignore: constant_identifier_names
 const int BITS_PER_INT = 32;

@@ -23,12 +23,12 @@ import 'package:diff_match_patch/src/match.dart';
 main() {
   group('Match', () {
     group('Alphabet', () {
-      void testMapEquals(Map a, Map b, String error_msg) {
-        test(error_msg, () {
+      void testMapEquals(Map a, Map b, String errorMsg) {
+        test(errorMsg, () {
           expect(a.keys, unorderedEquals(b.keys));
         });
         for (var x in a.keys) {
-          test('$error_msg [Key: $x]', () {
+          test('$errorMsg [Key: $x]', () {
             expect(a[x], equals(b[x]));
           });
         }

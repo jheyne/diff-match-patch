@@ -81,30 +81,30 @@ List<String>? _diffHalfMatchI(String longtext, String shorttext, int i) {
   // Start with a 1/4 length substring at position i as a seed.
   final seed = longtext.substring(i, i + (longtext.length / 4).floor().toInt());
   var j = -1;
-  var best_common = '';
-  var best_longtext_a = '', best_longtext_b = '';
-  var best_shorttext_a = '', best_shorttext_b = '';
+  var bestCommon = '';
+  var bestLongtextA = '', bestLongtextB = '';
+  var bestShorttextA = '', bestShorttextB = '';
   while ((j = shorttext.indexOf(seed, j + 1)) != -1) {
     var prefixLength =
         commonPrefix(longtext.substring(i), shorttext.substring(j));
     var suffixLength =
         commonSuffix(longtext.substring(0, i), shorttext.substring(0, j));
-    if (best_common.length < suffixLength + prefixLength) {
-      best_common = '${shorttext.substring(j - suffixLength, j)}'
+    if (bestCommon.length < suffixLength + prefixLength) {
+      bestCommon = '${shorttext.substring(j - suffixLength, j)}'
           '${shorttext.substring(j, j + prefixLength)}';
-      best_longtext_a = longtext.substring(0, i - suffixLength);
-      best_longtext_b = longtext.substring(i + prefixLength);
-      best_shorttext_a = shorttext.substring(0, j - suffixLength);
-      best_shorttext_b = shorttext.substring(j + prefixLength);
+      bestLongtextA = longtext.substring(0, i - suffixLength);
+      bestLongtextB = longtext.substring(i + prefixLength);
+      bestShorttextA = shorttext.substring(0, j - suffixLength);
+      bestShorttextB = shorttext.substring(j + prefixLength);
     }
   }
-  if (best_common.length * 2 >= longtext.length) {
+  if (bestCommon.length * 2 >= longtext.length) {
     return [
-      best_longtext_a,
-      best_longtext_b,
-      best_shorttext_a,
-      best_shorttext_b,
-      best_common
+      bestLongtextA,
+      bestLongtextB,
+      bestShorttextA,
+      bestShorttextB,
+      bestCommon
     ];
   } else {
     return null;

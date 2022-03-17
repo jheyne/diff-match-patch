@@ -267,40 +267,40 @@ List<Patch> patchMake(Object? a,
     return patches; // Get rid of the null case.
   }
   var patch = Patch();
-  final postpatch_buffer = StringBuffer();
-  var char_count1 = 0; // Number of characters into the text1 string.
-  var char_count2 = 0; // Number of characters into the text2 string.
+  final postpatchBuffer = StringBuffer();
+  var charCount1 = 0; // Number of characters into the text1 string.
+  var charCount2 = 0; // Number of characters into the text2 string.
   // Start with text1 (prepatch_text) and apply the diffs until we arrive at
   // text2 (postpatch_text). We recreate the patches one by one to determine
   // context info.
-  var prepatch_text = text1;
-  var postpatch_text = text1;
+  var prepatchText = text1;
+  var postpatchText = text1;
   for (var aDiff in diffs) {
     if (patch.diffs.isEmpty && aDiff.operation != DIFF_EQUAL) {
       // A new patch starts here.
-      patch.start1 = char_count1;
-      patch.start2 = char_count2;
+      patch.start1 = charCount1;
+      patch.start2 = charCount2;
     }
 
     switch (aDiff.operation) {
       case DIFF_INSERT:
         patch.diffs.add(aDiff);
         patch.length2 += aDiff.text.length;
-        postpatch_buffer.clear();
-        postpatch_buffer
-          ..write(postpatch_text.substring(0, char_count2))
+        postpatchBuffer.clear();
+        postpatchBuffer
+          ..write(postpatchText.substring(0, charCount2))
           ..write(aDiff.text)
-          ..write(postpatch_text.substring(char_count2));
-        postpatch_text = postpatch_buffer.toString();
+          ..write(postpatchText.substring(charCount2));
+        postpatchText = postpatchBuffer.toString();
         break;
       case DIFF_DELETE:
         patch.length1 += aDiff.text.length;
         patch.diffs.add(aDiff);
-        postpatch_buffer.clear();
-        postpatch_buffer
-          ..write(postpatch_text.substring(0, char_count2))
-          ..write(postpatch_text.substring(char_count2 + aDiff.text.length));
-        postpatch_text = postpatch_buffer.toString();
+        postpatchBuffer.clear();
+        postpatchBuffer
+          ..write(postpatchText.substring(0, charCount2))
+          ..write(postpatchText.substring(charCount2 + aDiff.text.length));
+        postpatchText = postpatchBuffer.toString();
         break;
       case DIFF_EQUAL:
         if (aDiff.text.length <= 2 * margin &&
@@ -315,15 +315,15 @@ List<Patch> patchMake(Object? a,
         if (aDiff.text.length >= 2 * margin) {
           // Time for a new patch.
           if (patch.diffs.isNotEmpty) {
-            patchAddContext(patch, prepatch_text, margin);
+            patchAddContext(patch, prepatchText, margin);
             patches.add(patch);
             patch = Patch();
             // Unlike Unidiff, our patch lists have a rolling context.
             // http://code.google.com/p/google-diff-match-patch/wiki/Unidiff
             // Update prepatch text & pos to reflect the application of the
             // just completed patch.
-            prepatch_text = postpatch_text;
-            char_count1 = char_count2;
+            prepatchText = postpatchText;
+            charCount1 = charCount2;
           }
         }
         break;
@@ -331,15 +331,15 @@ List<Patch> patchMake(Object? a,
 
     // Update the current character count.
     if (aDiff.operation != DIFF_INSERT) {
-      char_count1 += aDiff.text.length;
+      charCount1 += aDiff.text.length;
     }
     if (aDiff.operation != DIFF_DELETE) {
-      char_count2 += aDiff.text.length;
+      charCount2 += aDiff.text.length;
     }
   }
   // Pick up the leftover patch if not empty.
   if (patch.diffs.isNotEmpty) {
-    patchAddContext(patch, prepatch_text, margin);
+    patchAddContext(patch, prepatchText, margin);
     patches.add(patch);
   }
 
@@ -392,7 +392,7 @@ List patchApply(List<Patch> patches, String text,
   text = '$nullPadding$text$nullPadding';
   patchSplitMax(patches, margin: margin);
 
-  final text_buffer = StringBuffer();
+  final textBuffer = StringBuffer();
   var x = 0;
   // delta keeps track of the offset between the expected and actual location
   // of the previous patch.  If there are patches expected at positions 10 and
@@ -401,29 +401,29 @@ List patchApply(List<Patch> patches, String text,
   var delta = 0;
   final results = List<bool>.filled(patches.length, false);
   for (var aPatch in patches) {
-    var expected_loc = aPatch.start2 + delta;
+    var expectedLoc = aPatch.start2 + delta;
     var text1 = diffText1(aPatch.diffs);
-    int start_loc;
-    var end_loc = -1;
+    int startLoc;
+    var endLoc = -1;
     if (text1.length > BITS_PER_INT) {
       // patch_splitMax will only provide an oversized pattern in the case of
       // a monster delete.
-      start_loc = match(text, text1.substring(0, BITS_PER_INT), expected_loc,
+      startLoc = match(text, text1.substring(0, BITS_PER_INT), expectedLoc,
           threshold: matchThreshold, distance: matchDistance);
-      if (start_loc != -1) {
-        end_loc = match(text, text1.substring(text1.length - BITS_PER_INT),
-            expected_loc + text1.length - BITS_PER_INT,
+      if (startLoc != -1) {
+        endLoc = match(text, text1.substring(text1.length - BITS_PER_INT),
+            expectedLoc + text1.length - BITS_PER_INT,
             threshold: matchThreshold, distance: matchDistance);
-        if (end_loc == -1 || start_loc >= end_loc) {
+        if (endLoc == -1 || startLoc >= endLoc) {
           // Can't find valid trailing context.  Drop this patch.
-          start_loc = -1;
+          startLoc = -1;
         }
       }
     } else {
-      start_loc = match(text, text1, expected_loc,
+      startLoc = match(text, text1, expectedLoc,
           threshold: matchThreshold, distance: matchDistance);
     }
-    if (start_loc == -1) {
+    if (startLoc == -1) {
       // No match found.  :(
       results[x] = false;
       // Subtract the delta for this failed patch from subsequent patches.
@@ -431,23 +431,23 @@ List patchApply(List<Patch> patches, String text,
     } else {
       // Found a match.  :)
       results[x] = true;
-      delta = start_loc - expected_loc;
+      delta = startLoc - expectedLoc;
       String text2;
-      if (end_loc == -1) {
+      if (endLoc == -1) {
         text2 = text.substring(
-            start_loc, min(start_loc + text1.length, text.length));
+            startLoc, min(startLoc + text1.length, text.length));
       } else {
         text2 =
-            text.substring(start_loc, min(end_loc + BITS_PER_INT, text.length));
+            text.substring(startLoc, min(endLoc + BITS_PER_INT, text.length));
       }
       if (text1 == text2) {
         // Perfect match, just shove the replacement text in.
-        text_buffer.clear();
-        text_buffer
-          ..write(text.substring(0, start_loc))
+        textBuffer.clear();
+        textBuffer
+          ..write(text.substring(0, startLoc))
           ..write(diffText2(aPatch.diffs))
-          ..write(text.substring(start_loc + text1.length));
-        text = text_buffer.toString();
+          ..write(text.substring(startLoc + text1.length));
+        text = textBuffer.toString();
       } else {
         // Imperfect match.  Run a diff to get a framework of equivalent
         // indices.
@@ -465,20 +465,20 @@ List patchApply(List<Patch> patches, String text,
               var index2 = diffXIndex(diffs, index1);
               if (aDiff.operation == DIFF_INSERT) {
                 // Insertion
-                text_buffer.clear();
-                text_buffer
-                  ..write(text.substring(0, start_loc + index2))
+                textBuffer.clear();
+                textBuffer
+                  ..write(text.substring(0, startLoc + index2))
                   ..write(aDiff.text)
-                  ..write(text.substring(start_loc + index2));
-                text = text_buffer.toString();
+                  ..write(text.substring(startLoc + index2));
+                text = textBuffer.toString();
               } else if (aDiff.operation == DIFF_DELETE) {
                 // Deletion
-                text_buffer.clear();
-                text_buffer
-                  ..write(text.substring(0, start_loc + index2))
-                  ..write(text.substring(start_loc +
+                textBuffer.clear();
+                textBuffer
+                  ..write(text.substring(0, startLoc + index2))
+                  ..write(text.substring(startLoc +
                       diffXIndex(diffs, index1 + aDiff.text.length)));
-                text = text_buffer.toString();
+                text = textBuffer.toString();
               }
             }
             if (aDiff.operation != DIFF_DELETE) {
@@ -565,9 +565,9 @@ String patchAddPadding(List<Patch> patches, {int margin = 4}) {
 ///
 /// [patches] is a List of Patch objects.
 void patchSplitMax(List<Patch> patches, {int margin = 4}) {
-  final patch_size = BITS_PER_INT;
+  final patchSize = BITS_PER_INT;
   for (var x = 0; x < patches.length; x++) {
-    if (patches[x].length1 <= patch_size) {
+    if (patches[x].length1 <= patchSize) {
       continue;
     }
     var bigpatch = patches[x];
@@ -587,44 +587,44 @@ void patchSplitMax(List<Patch> patches, {int margin = 4}) {
         patch.length1 = patch.length2 = precontext.length;
         patch.diffs.add(Diff(DIFF_EQUAL, precontext));
       }
-      while (bigpatch.diffs.isNotEmpty && patch.length1 < patch_size - margin) {
-        var diff_type = bigpatch.diffs[0].operation;
-        var diff_text = bigpatch.diffs[0].text;
-        if (diff_type == DIFF_INSERT) {
+      while (bigpatch.diffs.isNotEmpty && patch.length1 < patchSize - margin) {
+        var diffType = bigpatch.diffs[0].operation;
+        var diffText = bigpatch.diffs[0].text;
+        if (diffType == DIFF_INSERT) {
           // Insertions are harmless.
-          patch.length2 += diff_text.length;
-          start2 += diff_text.length;
+          patch.length2 += diffText.length;
+          start2 += diffText.length;
           patch.diffs.add(bigpatch.diffs[0]);
           bigpatch.diffs.removeRange(0, 1);
           empty = false;
-        } else if (diff_type == DIFF_DELETE &&
+        } else if (diffType == DIFF_DELETE &&
             patch.diffs.length == 1 &&
             patch.diffs[0].operation == DIFF_EQUAL &&
-            diff_text.length > 2 * patch_size) {
+            diffText.length > 2 * patchSize) {
           // This is a large deletion.  Let it pass in one chunk.
-          patch.length1 += diff_text.length;
-          start1 += diff_text.length;
+          patch.length1 += diffText.length;
+          start1 += diffText.length;
           empty = false;
-          patch.diffs.add(Diff(diff_type, diff_text));
+          patch.diffs.add(Diff(diffType, diffText));
           bigpatch.diffs.removeRange(0, 1);
         } else {
           // Deletion or equality.  Only take as much as we can stomach.
-          diff_text = diff_text.substring(
-              0, min(diff_text.length, patch_size - patch.length1 - margin));
-          patch.length1 += diff_text.length;
-          start1 += diff_text.length;
-          if (diff_type == DIFF_EQUAL) {
-            patch.length2 += diff_text.length;
-            start2 += diff_text.length;
+          diffText = diffText.substring(
+              0, min(diffText.length, patchSize - patch.length1 - margin));
+          patch.length1 += diffText.length;
+          start1 += diffText.length;
+          if (diffType == DIFF_EQUAL) {
+            patch.length2 += diffText.length;
+            start2 += diffText.length;
           } else {
             empty = false;
           }
-          patch.diffs.add(Diff(diff_type, diff_text));
-          if (diff_text == bigpatch.diffs[0].text) {
+          patch.diffs.add(Diff(diffType, diffText));
+          if (diffText == bigpatch.diffs[0].text) {
             bigpatch.diffs.removeRange(0, 1);
           } else {
             bigpatch.diffs[0].text =
-                bigpatch.diffs[0].text.substring(diff_text.length);
+                bigpatch.diffs[0].text.substring(diffText.length);
           }
         }
       }

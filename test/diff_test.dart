@@ -687,13 +687,13 @@ main() {
 
       test('Simple case #3', () {
         expect(
-            diff('ax\t', '\u0680x\000', checklines: false, timeout: 0.0),
+            diff('ax\t', '\u0680x000', checklines: false, timeout: 0.0),
             equals([
               ddel('a'),
               dins('\u0680'),
               deq('x'),
               ddel('\t'),
-              dins('\000')
+              dins('000')
             ]));
       });
       test('Overlap #1', () {
@@ -765,9 +765,9 @@ main() {
             '1234567890\n1234567890\n1234567890\n1234567890\n1234567890\n1234567890\n1234567890\n1234567890\n1234567890\n1234567890\n1234567890\n1234567890\n1234567890\n';
         var b =
             'abcdefghij\n1234567890\n1234567890\n1234567890\nabcdefghij\n1234567890\n1234567890\n1234567890\nabcdefghij\n1234567890\n1234567890\n1234567890\nabcdefghij\n';
-        var texts_linemode = _rebuildTexts(diff(a, b));
-        var texts_textmode = _rebuildTexts(diff(a, b, checklines: false));
-        expect(texts_textmode, equals(texts_linemode));
+        var textsLinemode = _rebuildTexts(diff(a, b));
+        var textsTextmode = _rebuildTexts(diff(a, b, checklines: false));
+        expect(textsTextmode, equals(textsLinemode));
       });
 
       test('Timeout min', () {

@@ -14,6 +14,8 @@
 /// See the License for the specific language governing permissions and
 /// limitations under the License.
 
+// ignore_for_file: non_constant_identifier_names
+
 library api;
 
 import 'package:diff_match_patch/src/diff.dart' as d;
@@ -111,19 +113,19 @@ class DiffMatchPatch {
   /// available to the caller:
   ///
   /// * Method 1:
-  ///   [a] = text1, [opt_b] = text2
+  ///   [a] = text1, [optB] = text2
   /// * Method 2:
   ///   [a] = diffs
   /// * Method 3 (optimal):
-  ///   [a] = text1, [opt_b] = diffs
+  ///   [a] = text1, [optB] = diffs
   /// * Method 4 (deprecated, use method 3):
-  ///   [a] = text1, [opt_b] = text2, [opt_c] = diffs
+  ///   [a] = text1, [optB] = text2, [optC] = diffs
   ///
   /// Returns a List of Patch objects.
-  List<p.Patch> patch(Object a, [Object? opt_b, Object? opt_c]) {
+  List<p.Patch> patch(Object a, [Object? optB, Object? optC]) {
     return p.patchMake(a,
-        b: opt_b,
-        c: opt_c,
+        b: optB,
+        c: optC,
         diffTimeout: diffTimeout,
         diffEditCost: diffEditCost,
         deleteThreshold: patchDeleteThreshold,
